@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Optativas asignadas — Diplomatura en Ciencia de Datos</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --paper:#F6F5F0;
+    --paper-raised:#FFFFFF;
+    --ink:#1B2A4A;
+    --ink-soft:#3D4B6B;
+    --text:#242526;
+    --muted:#6B6F76;
+    --line:#D8D4C7;
+    --ochre:#B9873A;
+    --ochre-soft:#F1E4CC;
+    --alert:#9B3F32;
+    --alert-soft:#F3E1DC;
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--paper);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:56px 20px 80px;
+  }
+
+  main{
+    width:100%;
+    max-width:600px;
+  }
+
+  .kicker{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    letter-spacing:0.02em;
+    margin-bottom:18px;
+  }
+
+  h1{
+    font-family:'Source Serif 4',serif;
+    font-weight:700;
+    font-size:clamp(28px,5vw,38px);
+    line-height:1.15;
+    color:var(--ink);
+    margin:0 0 8px;
+  }
+
+  .subtitle{
+    font-family:'Source Serif 4',serif;
+    font-style:italic;
+    font-size:16px;
+    color:var(--ink-soft);
+    margin:0 0 28px;
+  }
+
+  .explainer{
+    font-size:15px;
+    line-height:1.6;
+    color:var(--text);
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-left:3px solid var(--ochre);
+    padding:16px 18px;
+    margin-bottom:36px;
+  }
+
+  .explainer strong{ color:var(--ink); }
+
+  .query-panel{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    padding:26px;
+    margin-bottom:24px;
+  }
+
+  label{
+    display:block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+
+  .input-row{
+    display:flex;
+    gap:10px;
+  }
+
+  input[type="text"]{
+    flex:1;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:18px;
+    letter-spacing:0.03em;
+    padding:12px 14px;
+    border:1px solid var(--line);
+    background:var(--paper);
+    color:var(--ink);
+    outline:none;
+    min-width:0;
+  }
+
+  input[type="text"]:focus{
+    border-color:var(--ink-soft);
+  }
+
+  button{
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    padding:12px 22px;
+    background:var(--ink);
+    color:var(--paper);
+    border:1px solid var(--ink);
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+
+  button:hover{ background:var(--ink-soft); }
+  button:active{ transform:translateY(1px); }
+
+  .hint{
+    font-size:12.5px;
+    color:var(--muted);
+    margin-top:10px;
+  }
+
+  #result{ min-height:4px; }
+
+  .card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    padding:26px 28px;
+    animation:appear .25s ease;
+  }
+
+  @keyframes appear{
+    from{ opacity:0; transform:translateY(6px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  .card-name{
+    font-family:'Source Serif 4',serif;
+    font-weight:600;
+    font-size:22px;
+    color:var(--ink);
+    margin:0 0 2px;
+  }
+
+  .card-dni{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--muted);
+    margin-bottom:22px;
+  }
+
+  .materia{
+    padding:16px 0;
+    border-top:1px solid var(--line);
+  }
+
+  .materia:last-child{ padding-bottom:0; }
+
+  .materia-tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    color:var(--ochre);
+    margin-bottom:6px;
+  }
+
+  .materia-nombre{
+    font-family:'Source Serif 4',serif;
+    font-weight:600;
+    font-size:17px;
+    color:var(--text);
+    margin:0 0 8px;
+    line-height:1.3;
+  }
+
+  .materia-meta{
+    font-size:14px;
+    color:var(--muted);
+    line-height:1.6;
+  }
+
+  .materia-meta span{
+    color:var(--ink-soft);
+  }
+
+  .state-box{
+    padding:22px 24px;
+    border:1px solid var(--line);
+  }
+
+  .state-box.error{
+    background:var(--alert-soft);
+    border-color:#D8B7AE;
+  }
+
+  .state-box.pending{
+    background:var(--ochre-soft);
+    border-color:#DEC495;
+  }
+
+  .state-title{
+    font-family:'Source Serif 4',serif;
+    font-weight:600;
+    font-size:18px;
+    margin:0 0 6px;
+  }
+
+  .state-box.error .state-title{ color:var(--alert); }
+  .state-box.pending .state-title{ color:#8A6420; }
+
+  .state-text{
+    font-size:14.5px;
+    line-height:1.55;
+    color:var(--text);
+  }
+
+  footer{
+    margin-top:36px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    color:var(--muted);
+    text-align:center;
+  }
+
+  @media (max-width:480px){
+    .input-row{ flex-direction:column; }
+    button{ width:100%; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+  <div class="kicker">FAMAF · UNC — Cohorte 2026</div>
+  <h1>Diplomatura en Ciencia de Datos</h1>
+  <p class="subtitle">Aprendizaje Automático y sus Aplicaciones</p>
+
+  <div class="explainer">
+    Podés cursar cualquier optativa que te interese, sin restricción.
+    Pero solo hay <strong>dos que tenés que aprobar</strong> para completar la Diplomatura:
+    las que elegiste en la inscripción. Buscá tu DNI para confirmar cuáles son.
+  </div>
+
+  <div class="query-panel">
+    <label for="dni-input">Documento (sin puntos)</label>
+    <div class="input-row">
+      <input type="text" id="dni-input" placeholder="Ej: 33670616" inputmode="numeric" autocomplete="off">
+      <button id="search-btn">Buscar</button>
+    </div>
+    <div class="hint">Escribí tu número de DNI y presioná Enter o Buscar.</div>
+  </div>
+
+  <div id="result"></div>
+
+  <footer>Coordinación Diplomatura — diplodatos@famaf.unc.edu.ar</footer>
+
+</main>
+
+<script>
+const STUDENTS = [{"dni": "46450572", "nombre": "Gonzalo Nicolas", "apellido": "Marengo", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "33670616", "nombre": "Ruben", "apellido": "Rasi", "sinAsignar": false, "materias": [{"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "44273914", "nombre": "Mauricio", "apellido": "Pintos", "sinAsignar": false, "materias": [{"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "39392459", "nombre": "Mariano", "apellido": "Fiorotto", "sinAsignar": false, "materias": [{"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "39448807", "nombre": "Camila", "apellido": "Villalba", "sinAsignar": false, "materias": [{"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}, {"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}]}, {"dni": "29030598", "nombre": "Noelia", "apellido": "Ramos", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "53098238", "nombre": "Lorena", "apellido": "Valencia", "sinAsignar": false, "materias": [{"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "40401832", "nombre": "Juan", "apellido": "Perez Pinelli", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "29469196", "nombre": "Juan Francisco", "apellido": "Casco", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "33440241", "nombre": "Sergio", "apellido": "Santamarina", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "26977927", "nombre": "José", "apellido": "Espinosa", "sinAsignar": false, "materias": [{"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "36282649", "nombre": "Jorge Joaquín Fernando", "apellido": "Solis", "sinAsignar": false, "materias": [{"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "43940290", "nombre": "Matias Alessandro", "apellido": "Ruiz", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}]}, {"dni": "32646596", "nombre": "Javier Norberto", "apellido": "Zader", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "44694897", "nombre": "Juan Pablo", "apellido": "Listte", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "35525079", "nombre": "Pincen Nao", "apellido": "Decima", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "96166779", "nombre": "Ender José", "apellido": "Romero", "sinAsignar": false, "materias": [{"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "39657524", "nombre": "Maria Belen", "apellido": "Aguilar Velasquez", "sinAsignar": false, "materias": [{"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "35545750", "nombre": "Eric", "apellido": "Sigwald", "sinAsignar": false, "materias": [{"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "23290432", "nombre": "Guillermo", "apellido": "Loza", "sinAsignar": false, "materias": [{"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "33184638", "nombre": "Federico", "apellido": "Guzzetti", "sinAsignar": false, "materias": [{"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "31581494", "nombre": "María Regina", "apellido": "Garzón", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "34641897", "nombre": "Juan Pablo", "apellido": "Martinez", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "41853412", "nombre": "Francisco", "apellido": "Risculese", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "39448440", "nombre": "Julieta", "apellido": "Rios", "sinAsignar": false, "materias": [{"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "43133906", "nombre": "Paula Fabiana", "apellido": "Karlen", "sinAsignar": false, "materias": [{"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "26652565", "nombre": "Cristian", "apellido": "Senyk", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "39058280", "nombre": "Nicolás", "apellido": "Bobone", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "94340039", "nombre": "Nahomy", "apellido": "Puente", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "39692250", "nombre": "Lautaro Joaquín", "apellido": "Bustos Raiz", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "43450433", "nombre": "José Ignacio", "apellido": "Martinoli", "sinAsignar": false, "materias": [{"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "41297122", "nombre": "Camila Ines", "apellido": "Amado", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "35838704", "nombre": "Facundo", "apellido": "Chavez", "sinAsignar": false, "materias": [{"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "42993939", "nombre": "Iván Ezequiel", "apellido": "Schneider", "sinAsignar": false, "materias": [{"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "41712210", "nombre": "Axel", "apellido": "Herrera Petanas", "sinAsignar": true, "materias": []}, {"dni": "39080784", "nombre": "Juan Manuel", "apellido": "Dendarys", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "37845695", "nombre": "Juan Martin", "apellido": "Nuin", "sinAsignar": false, "materias": [{"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "40298267", "nombre": "Priscilla", "apellido": "Mingorance", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "44346456", "nombre": "Jael Abigail", "apellido": "Mataloni", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "33389909", "nombre": "Esteban Antonio", "apellido": "Avila", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "96133021", "nombre": "Blanca", "apellido": "Ayala", "sinAsignar": true, "materias": []}, {"dni": "44274145", "nombre": "Valentin", "apellido": "Virasoro", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}]}, {"dni": "21560430", "nombre": "Daniela Alicia", "apellido": "Armijo", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "35526656", "nombre": "Sabrina", "apellido": "Rodriguez", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "41307711", "nombre": "Ulises Alberto Fernando", "apellido": "Videla", "sinAsignar": false, "materias": [{"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "31434565", "nombre": "Rodrigo", "apellido": "Navarro Cafferata", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "43997487", "nombre": "Julián Emiliano", "apellido": "Romero", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "22937206", "nombre": "Pablo Lorenzo", "apellido": "Micheli", "sinAsignar": false, "materias": [{"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "43272714", "nombre": "Juan Pablo", "apellido": "Fernández Avello", "sinAsignar": false, "materias": [{"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "42260364", "nombre": "Amadeo", "apellido": "Ciaffi Araoz", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "39304977", "nombre": "Ana Maria Lourdes", "apellido": "Luna", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "39794288", "nombre": "Maria Sofía", "apellido": "Castaño Ledesma", "sinAsignar": false, "materias": [{"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}, {"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}]}, {"dni": "37857822", "nombre": "Franco", "apellido": "Cippitelli", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "24297354", "nombre": "Sergio Damian", "apellido": "Gruzycki", "sinAsignar": false, "materias": [{"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "39459593", "nombre": "Federico", "apellido": "Castro", "sinAsignar": false, "materias": [{"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "42860649", "nombre": "Juan Manuel Jesús", "apellido": "Azcona", "sinAsignar": false, "materias": [{"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "29714128", "nombre": "Jorge Luis", "apellido": "Mira", "sinAsignar": false, "materias": [{"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "41998951", "nombre": "Francisco", "apellido": "Bichir Cisneros", "sinAsignar": false, "materias": [{"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "43233369", "nombre": "Farid", "apellido": "Alvarez", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "37811838", "nombre": "Nicolás Eugenio", "apellido": "Martín", "sinAsignar": false, "materias": [{"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}, {"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}]}, {"dni": "41157568", "nombre": "Dayana Janet", "apellido": "Brizuela", "sinAsignar": false, "materias": [{"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "35528251", "nombre": "Verónica", "apellido": "Aráoz", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "38986555", "nombre": "Dario Juan", "apellido": "Benetti", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "37666303", "nombre": "Lucila", "apellido": "Pasquetta", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}]}, {"dni": "19076058", "nombre": "Orlando Del Valle", "apellido": "Vargas Reales", "sinAsignar": false, "materias": [{"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "37703435", "nombre": "Regina", "apellido": "Righelato", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "39229175", "nombre": "Rocio Soledad", "apellido": "Da Silva", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "34604132", "nombre": "María Magdalena", "apellido": "Borda", "sinAsignar": false, "materias": [{"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "27349358", "nombre": "Gustavo Gabriel", "apellido": "Voldman", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "43133644", "nombre": "Agustin", "apellido": "Macrina", "sinAsignar": false, "materias": [{"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "39690677", "nombre": "Carla Juliana", "apellido": "Lescano", "sinAsignar": false, "materias": [{"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "25267922", "nombre": "Andrea Patricia", "apellido": "Llanos", "sinAsignar": false, "materias": [{"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "36125642", "nombre": "German", "apellido": "Gonzalez", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "33083177", "nombre": "María Florencia", "apellido": "Fernandez", "sinAsignar": false, "materias": [{"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}, {"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}]}, {"dni": "43529762", "nombre": "Agustina Itatí", "apellido": "Nedel", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "32861936", "nombre": "Federico", "apellido": "Mina", "sinAsignar": false, "materias": [{"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "43358876", "nombre": "Lautaro", "apellido": "Clavero", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "42857590", "nombre": "Luis Francisco", "apellido": "Capobianco", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "24372999", "nombre": "Guillermo Daniel", "apellido": "García", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "33529348", "nombre": "Laura", "apellido": "Catena", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "36594950", "nombre": "Joaquin", "apellido": "Lovizio Ramos", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "41002699", "nombre": "Stefania", "apellido": "Domingo", "sinAsignar": false, "materias": [{"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "43811454", "nombre": "Jeremías", "apellido": "Taran", "sinAsignar": false, "materias": [{"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "35531362", "nombre": "Agustin Tonatiuh", "apellido": "Green Canelo", "sinAsignar": false, "materias": [{"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "43116607", "nombre": "Delfina", "apellido": "Fantini", "sinAsignar": false, "materias": [{"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}, {"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}]}, {"dni": "33975977", "nombre": "Martín Ezequiel", "apellido": "Abrudsky", "sinAsignar": false, "materias": [{"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "38783646", "nombre": "Jerónimo", "apellido": "Brizuela", "sinAsignar": false, "materias": [{"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "42785093", "nombre": "Marco", "apellido": "Spalletti", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "43143222", "nombre": "Ezequiel", "apellido": "Ludueña", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "45347438", "nombre": "Nicolás Uriel", "apellido": "Mansutti", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "28852536", "nombre": "Mario", "apellido": "Lanteri", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}]}, {"dni": "40824990", "nombre": "Micaela", "apellido": "Gallinger", "sinAsignar": false, "materias": [{"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "43191325", "nombre": "Lucas Ariel", "apellido": "Vergara", "sinAsignar": false, "materias": [{"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}, {"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}]}, {"dni": "41762427", "nombre": "Tomas", "apellido": "Krag", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "37293393", "nombre": "Maria Luz", "apellido": "González", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "32578098", "nombre": "María Valeria", "apellido": "Sieyra", "sinAsignar": false, "materias": [{"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "39951081", "nombre": "Gerónimo", "apellido": "Castro", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "39476516", "nombre": "Gerónimo", "apellido": "Sequeiros", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "41279708", "nombre": "Lautaro", "apellido": "Carracedo", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "39456133", "nombre": "Sebastian", "apellido": "Rigo", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "39303521", "nombre": "Jonathan", "apellido": "Narvaez", "sinAsignar": false, "materias": [{"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "42147371", "nombre": "Juan", "apellido": "Yornet", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "45083090", "nombre": "Mariano Rafael", "apellido": "Baggini", "sinAsignar": false, "materias": [{"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "39495673", "nombre": "Constanza", "apellido": "Bencharski", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "36429927", "nombre": "Florencia Gabriela", "apellido": "Abagnale", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "26145054", "nombre": "Angela", "apellido": "Fernandez", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "35576796", "nombre": "Fernando Gabriel", "apellido": "Luna", "sinAsignar": false, "materias": [{"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "28178261", "nombre": "Gonzalo Fernando", "apellido": "Perez Paina", "sinAsignar": false, "materias": [{"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "41626430", "nombre": "Ricardo Josué", "apellido": "Arana Villarroel", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "43370241", "nombre": "Francisco Gabriel", "apellido": "Zavalla Bresciani", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "33320089", "nombre": "Christian Adriel", "apellido": "Perez", "sinAsignar": false, "materias": [{"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "40212329", "nombre": "Daniela Alejandra", "apellido": "Riego", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "43765525", "nombre": "Maria Valentina", "apellido": "Gallardo", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "45450133", "nombre": "Martín Gabriel", "apellido": "Gomez", "sinAsignar": false, "materias": [{"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "44475548", "nombre": "Laura Ayelén", "apellido": "Bridera", "sinAsignar": false, "materias": [{"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "43524389", "nombre": "Francisco", "apellido": "Martiarena", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "42697694", "nombre": "Cecilia Ximena", "apellido": "Alvarado", "sinAsignar": false, "materias": [{"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "44244748", "nombre": "Basel", "apellido": "Abdel Masih", "sinAsignar": false, "materias": [{"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}, {"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}]}, {"dni": "38338219", "nombre": "Rafael Andrés", "apellido": "Pignata", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "96028624", "nombre": "Nicolás", "apellido": "Mayorga", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "21391793", "nombre": "Ines", "apellido": "Pacharoni", "sinAsignar": true, "materias": []}, {"dni": "40963751", "nombre": "Muriel", "apellido": "Zampieri", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "40904939", "nombre": "Marina", "apellido": "Palacio Fornero", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "34147971", "nombre": "María José", "apellido": "Kanagusuku", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "40820570", "nombre": "Wara Micaela", "apellido": "Cachambi Patzi", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "34880724", "nombre": "Rodrigo", "apellido": "Chani", "sinAsignar": false, "materias": [{"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "44292530", "nombre": "Gonzalo", "apellido": "Bordón", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}]}, {"dni": "41220990", "nombre": "Catalina", "apellido": "Rodríguez Buss", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "39701841", "nombre": "Maria Victoria", "apellido": "Cortez", "sinAsignar": false, "materias": [{"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}, {"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}]}, {"dni": "33701850", "nombre": "Flavia", "apellido": "Quiroga", "sinAsignar": false, "materias": [{"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}, {"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}]}, {"dni": "39621633", "nombre": "Magalí", "apellido": "Ahumada", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}]}, {"dni": "38183108", "nombre": "Florencia", "apellido": "Bejarano Biglia", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}]}, {"dni": "41594026", "nombre": "Camila Trinidad", "apellido": "Velez", "sinAsignar": false, "materias": [{"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}, {"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}]}, {"dni": "95926177", "nombre": "Diego", "apellido": "Dorado", "sinAsignar": false, "materias": [{"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}, {"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}]}, {"dni": "39621520", "nombre": "Manuel", "apellido": "Zeballos", "sinAsignar": false, "materias": [{"nombre": "AWS Academy Machine Learning Foundations", "docentes": ["Fabian Januszewski"], "fecha": "28/29 de agosto y 4/5 de septiembre"}, {"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}]}, {"dni": "38730948", "nombre": "Agustina", "apellido": "Gonzalez", "sinAsignar": false, "materias": [{"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}, {"nombre": "Análisis de series de tiempo en finanzas", "docentes": ["Noemí Patricia Kisbye", "Ana Georgina Flesia"], "fecha": "23/24 de octubre y 30/31 de octubre"}]}, {"dni": "31089253", "nombre": "Antonio Héctor", "apellido": "Dell'Osa", "sinAsignar": false, "materias": [{"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "96338538", "nombre": "Omar Steven", "apellido": "Gutiérrez Rojas", "sinAsignar": false, "materias": [{"nombre": "Aprendizaje por Refuerzos", "docentes": ["Juan Cruz Barsce", "Jorge Palombarini"], "fecha": "6/7 de noviembre y 13/14 de noviembre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}, {"dni": "43449799", "nombre": "Ignacio", "apellido": "Villanueva", "sinAsignar": false, "materias": [{"nombre": "Programación distribuida sobre grandes volúmenes de datos", "docentes": ["Damian Barsotti"], "fecha": "25/26 de septiembre y 2/3 de octubre"}, {"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}]}, {"dni": "27590882", "nombre": "Mariano Rafael", "apellido": "Droz", "sinAsignar": false, "materias": [{"nombre": "Desarrollo de Aplicaciones con LLMs y Modelos Generativos", "docentes": ["Diego Sebastián Perez"], "fecha": "11/12 de septiembre y 18/19 de septiembre"}, {"nombre": "Procesamiento de Imágenes", "docentes": ["Claudio Delrieux"], "fecha": "9/10 de octubre y 16/17 de octubre"}]}];
+
+const byDni = {};
+STUDENTS.forEach(s => { byDni[s.dni] = s; });
+
+const input = document.getElementById('dni-input');
+const btn = document.getElementById('search-btn');
+const result = document.getElementById('result');
+
+function cleanDni(raw){
+  return raw.replace(/[^0-9]/g, '');
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function renderNotFound(){
+  result.innerHTML = `
+    <div class="state-box error">
+      <p class="state-title">No encontramos ese DNI</p>
+      <p class="state-text">Revisá que esté bien escrito, sin puntos ni espacios. Si el problema persiste, escribí a diplodatos@famaf.unc.edu.ar.</p>
+    </div>`;
+}
+
+function renderPending(student){
+  result.innerHTML = `
+    <div class="state-box pending">
+      <p class="state-title">${escapeHtml(student.nombre)} ${escapeHtml(student.apellido)}</p>
+      <p class="state-text">Aún sin asignar. Consultá con coordinación en diplodatos@famaf.unc.edu.ar.</p>
+    </div>`;
+}
+
+function renderStudent(student){
+  const materiasHtml = student.materias.map((m, i) => `
+    <div class="materia">
+      <div class="materia-tag">optativa ${i + 1} de 2</div>
+      <p class="materia-nombre">${escapeHtml(m.nombre)}</p>
+      <div class="materia-meta">
+        Docente: <span>${escapeHtml(m.docentes.join(' y '))}</span><br>
+        Fecha: <span>${escapeHtml(m.fecha)}</span>
+      </div>
+    </div>
+  `).join('');
+
+  result.innerHTML = `
+    <div class="card">
+      <p class="card-name">${escapeHtml(student.nombre)} ${escapeHtml(student.apellido)}</p>
+      <p class="card-dni">DNI ${escapeHtml(student.dni)}</p>
+      ${materiasHtml}
+    </div>`;
+}
+
+function doSearch(){
+  const dni = cleanDni(input.value);
+  if(!dni){
+    result.innerHTML = '';
+    return;
+  }
+  const student = byDni[dni];
+  if(!student){
+    renderNotFound();
+    return;
+  }
+  if(student.sinAsignar){
+    renderPending(student);
+    return;
+  }
+  renderStudent(student);
+}
+
+btn.addEventListener('click', doSearch);
+input.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') doSearch();
+});
+</script>
+</body>
+</html>
